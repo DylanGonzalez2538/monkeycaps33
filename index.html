@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CapZone - Gorras Exclusivas</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Poppins', sans-serif;
+    }
+    body {
+      background: linear-gradient(120deg, #0f0f0f, #1a1a1a);
+      color: #f0f0f0;
+    }
+    header {
+      background: #000;
+      color: gold;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 10px rgba(255,215,0,0.2);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .logo {
+      font-size: 1.8rem;
+      font-weight: 800;
+      letter-spacing: 2px;
+      cursor: default;
+      user-select: none;
+    }
+    nav {
+      display: flex;
+      gap: 1.2rem;
+    }
+    nav button {
+      background: transparent;
+      border: 2px solid gold;
+      color: gold;
+      padding: 0.4rem 0.8rem;
+      font-weight: 700;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s, color 0.3s;
+      font-size: 0.9rem;
+    }
+    nav button:hover {
+      background: gold;
+      color: #000;
+    }
+    .cart {
+      cursor: pointer;
+      position: relative;
+      font-size: 1.8rem;
+      user-select: none;
+    }
+    .cart-count {
+      position: absolute;
+      top: -8px;
+      right: -10px;
+      background: crimson;
+      color: white;
+      border-radius: 50%;
+      padding: 2px 7px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      user-select: none;
+    }
+    section {
+      padding: 3rem 2rem;
+      max-width: 1200px;
+      margin: auto;
+    }
+    h2 {
+      margin-bottom: 1.5rem;
+      font-size: 2rem;
+      color: gold;
+      text-shadow: 0 0 5px #ffd700bb;
+      font-weight: 900;
+      user-select: none;
+    }
+    .container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+    }
+    .product {
+      background: #1e1e1e;
+      padding: 1rem;
+      border-radius: 16px;
+      box-shadow: 0 0 20px rgba(255, 215, 0, 0.15);
+      text-align: center;
+      transition: transform 0.3s, box-shadow 0.3s;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .product:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 0 30px 3px gold;
+    }
+    .product img {
+      width: 100%;
+      border-radius: 12px;
+      margin-bottom: 1rem;
+      object-fit: cover;
+      max-height: 180px;
+      box-shadow: 0 0 8px #ffd700aa;
+      user-select: none;
+    }
+    .product h3 {
+      margin-bottom: 0.6rem;
+      color: white;
+      font-size: 1.2rem;
+      font-weight: 700;
+    }
+    .product p {
+      color: #ccc;
+      margin-bottom: 1rem;
+      flex-grow: 1;
+      font-size: 0.95rem;
+      user-select: text;
+    }
+    .price {
+      color: #ffd700cc;
+      font-weight: 900;
+      font-size: 1.15rem;
+      margin-bottom: 1rem;
+      user-select: none;
+    }
+    .product button {
+      background: gold;
+      color: #000;
+      border: none;
+      padding: 0.7rem 1.3rem;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 900;
+      transition: background 0.3s;
+      user-select: none;
+    }
+    .product button:hover {
+      background: #e5c100;
+    }
+    .cart-animate {
+      animation: bounce 0.5s ease;
+    }
+    @keyframes bounce {
+      0% { transform: scale(1); }
+      25% { transform: scale(1.2); }
+      50% { transform: scale(0.95); }
+      75% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+
+    /* Resumen carrito modal */
+    #cart-summary {
+      position: fixed;
+      top: 60px;
+      right: 20px;
+      width: 320px;
+      max-height: 400px;
+      background: #111;
+      border: 2px solid gold;
+      border-radius: 16px;
+      box-shadow: 0 0 25px gold;
+      color: #eee;
+      overflow-y: auto;
+      padding: 1rem;
+      display: none;
+      flex-direction: column;
+      z-index: 999;
+      user-select: none;
+    }
+    #cart-summary h3 {
+      color: gold;
+      margin-bottom: 1rem;
+      text-align: center;
+      font-weight: 900;
+    }
+    #cart-items {
+      flex-grow: 1;
+      margin-bottom: 1rem;
+    }
+    .cart-item {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.7rem;
+      border-bottom: 1px solid #444;
+      padding-bottom: 0.3rem;
+      font-size: 0.95rem;
+    }
+    .cart-item span {
+      user-select: text;
+    }
+    #cart-total {
+      font-weight: 900;
+      font-size: 1.1rem;
+      color: gold;
+      margin-bottom: 1rem;
+      text-align: right;
+    }
+    #checkout-btn {
+      background: gold;
+      border: none;
+      color: #000;
+      font-weight: 900;
+      padding: 0.7rem 1rem;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: background 0.3s;
+      user-select: none;
+    }
+    #checkout-btn:hover {
+      background: #e5c100;
+    }
+
+    /* Responsive */
+    @media (max-width: 480px) {
+      header {
+        flex-direction: column;
+        gap: 1rem;
+      }
+      nav {
+        justify-content: center;
+      }
+      #cart-summary {
+        width: 90vw;
+        max-height: 50vh;
+        right: 5%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="logo">monkeycaps</div>
+    <nav>
+      <button onclick="scrollToSection('nuevas')">Nuevas</button>
+      <button onclick="scrollToSection('especiales')">Edición Especial</button>
+      <button onclick="scrollToSection('colecciones')">Colecciones</button>
+    </nav>
+    <div class="cart" id="cart-icon" onclick="toggleCart()">
+       <span class="cart-count" id="cart-count">0</span>
+    </div>
+  </header>
+
+  <section id="nuevas">
+    <h2>Nuevas Llegadas</h2>
+    <div class="container">
+      <div class="product">
+        <img src="Multimedia\gorraClassic.jpg" alt="Gorra Classic Black" />
+        <h3>Gorra Classic Black</h3>
+        <p>Un clásico moderno para cualquier ocasión. Calidad premium y estilo inconfundible.</p>
+        <div class="price">$55.00</div>
+        <button onclick="addToCart('Gorra Classic Black', 55)">Agregar al carrito</button>
+      </div>
+      <div class="product">
+    <img src="Multimedia\Gorra Street Vibe.jpg" alt="Gorra Street Vibe" />
+        <h3>Gorra Street Vibe</h3>
+        <p>Estilo urbano con detalles dorados para destacar entre la multitud.</p>
+        <div class="price">$70.00</div>
+        <button onclick="addToCart('Gorra Street Vibe', 70)">Agregar al carrito</button>
+      </div>
+      <div class="product">
+        <img src="Multimedia\Gorra Night Glow.jpg" alt="Gorra Night Glow" />
+        <h3>Gorra Night Glow</h3>
+        <p>Brilla en la oscuridad con esta edición limitada y diseño futurista.</p>
+        <div class="price">$85.00</div>
+        <button onclick="addToCart('Gorra Night Glow', 85)">Agregar al carrito</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="especiales">
+    <h2>Edición Especial</h2>
+    <div class="container">
+      <div class="product">
+        <img src="Multimedia\Gorra Golden Luxe.jpg" alt="Gorra Golden Luxe" />
+        <h3>Gorra Golden Luxe</h3>
+        <p>Diseño exclusivo con detalles en oro real y materiales premium.</p>
+        <div class="price">$150.00</div>
+        <button onclick="addToCart('Gorra Golden Luxe', 150)">Agregar al carrito</button>
+      </div>
+      <div class="product">
+        <img src="Multimedia\Gorra Limited Platinum.jpg" alt="Gorra Limited Platinum" />
+        <h3>Gorra Limited Platinum</h3>
+        <p>Solo 100 unidades en el mundo. Un símbolo de exclusividad y estatus.</p>
+        <div class="price">$200.00</div>
+        <button onclick="addToCart('Gorra Limited Platinum', 200)">Agregar al carrito</button>
+      </div>
+      <div class="product">
+        <img src="Multimedia\Gorra Midnight Royal.jpg" alt="Gorra Midnight Royal" />
+        
+        <h3>Gorra Midnight Royal</h3>
+        <p>Detalles en terciopelo y bordados dorados para una experiencia única.</p>
+        <div class="price">$175.00</div>
+        <button onclick="addToCart('Gorra Midnight Royal', 175)">Agregar al carrito</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="colecciones">
+    <h2>Colecciones</h2>
+    <div class="container">
+      <div class="product">
+        <img src="Multimedia\Colección Urban Legends.jpg" alt="Colección Urban Legends" />
+        <h3>Colección Urban Legends</h3>
+        <p>Gorras inspiradas en leyendas urbanas y cultura pop.</p>
+        <div class="price">$120.00</div>
+        <button onclick="addToCart('Colección Urban Legends', 120)">Agregar al carrito</button>
+      </div>
+      <div class="product">
+        <img src="Multimedia\Colección Retro Vibes.jpg" alt="Colección Retro Vibes" />
+        <h3>Colección Retro Vibes</h3>
+        <p>Estilo vintage con los colores y diseños más icónicos.</p>
+        <div class="price">$110.00</div>
+        <button onclick="addToCart('Colección Retro Vibes', 110)">Agregar al carrito</button>
+      </div>
+      <div class="product">
+        <img src="Multimedia\Colección Futurista.jpg" alt="Colección Futurista" />
+        <h3>Colección Futurista</h3>
+        <p>Diseños modernos con un toque tecnológico y futurista.</p>
+        <div class="price">$130.00</div>
+        <button onclick="addToCart('Colección Futurista', 130)">Agregar al carrito</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Resumen del carrito -->
+  <div id="cart-summary">
+    <h3>Tu Carrito</h3>
+    <div id="cart-items"></div>
+    <div id="cart-total"></div>
+    <button id="checkout-btn" onclick="goToCheckout()">Finalizar Compra</button>
+  </div>
+
+  <script>
+    const cart = JSON.parse(localStorage.getItem('capzoneCart')) || [];
+
+    const cartCountEl = document.getElementById('cart-count');
+    const cartSummary = document.getElementById('cart-summary');
+    const cartItemsEl = document.getElementById('cart-items');
+    const cartTotalEl = document.getElementById('cart-total');
+
+    function updateCartCount() {
+      cartCountEl.textContent = cart.reduce((sum, item) => sum + item.quantity, 0);
+    }
+
+    function addToCart(name, price) {
+      const existing = cart.find(item => item.name === name);
+      if (existing) {
+        existing.quantity++;
+      } else {
+        cart.push({ name, price, quantity: 1 });
+      }
+      localStorage.setItem('capzoneCart', JSON.stringify(cart));
+      updateCartCount();
+      animateCartIcon();
+      if(cartSummary.style.display === 'flex') {
+        renderCart();
+      }
+    }
+
+    function animateCartIcon() {
+      cartCountEl.classList.add('cart-animate');
+      setTimeout(() => cartCountEl.classList.remove('cart-animate'), 500);
+    }
+
+    function toggleCart() {
+      if (cartSummary.style.display === 'flex') {
+        cartSummary.style.display = 'none';
+      } else {
+        renderCart();
+        cartSummary.style.display = 'flex';
+      }
+    }
+
+    function renderCart() {
+      if (cart.length === 0) {
+        cartItemsEl.innerHTML = "<p style='text-align:center; color:#aaa;'>Tu carrito está vacío.</p>";
+        cartTotalEl.textContent = "";
+        return;
+      }
+      cartItemsEl.innerHTML = '';
+      let total = 0;
+      cart.forEach(item => {
+        total += item.price * item.quantity;
+        const div = document.createElement('div');
+        div.className = 'cart-item';
+        div.innerHTML = `
+          <span>${item.name} x${item.quantity}</span>
+          <span>$${(item.price * item.quantity).toFixed(2)}</span>
+        `;
+        cartItemsEl.appendChild(div);
+      });
+      cartTotalEl.textContent = `Total: $${total.toFixed(2)}`;
+    }
+
+    function goToCheckout() {
+      if(cart.length === 0){
+        alert("Tu carrito está vacío, agrega productos antes de finalizar la compra.");
+        return;
+      }
+      // Guardar el carrito completo en localStorage para que el formulario pueda usarlo si quieres
+      localStorage.setItem('capzoneCart', JSON.stringify(cart));
+      window.location.href = 'formulario.php';
+    }
+
+    updateCartCount();
+  </script>
+
+</body>
+</html>
+
+
